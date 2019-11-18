@@ -1,9 +1,21 @@
 <template>
   <q-page class="q-pa-md">
     <p>Todo Page</p>
-    <q-list bordered seperator>
+    <q-list v-if="Object.keys(tasks).length" bordered seperator>
       <task v-for="(task,key) in tasks" :key="key" :task="task" :id="key" ></task>
     </q-list>
+    <div class="absolute-bottom text-center q-mb-lg">
+  <q-btn
+    @click="showAddTask = true"
+    round
+    color="primary"
+    size="24px"
+    icon="add"
+  />
+  </div>
+    <q-dialog v-model="showAddTask">
+      <add-task @close="showAddTask = false" />
+    </q-dialog>
   </q-page>
 </template>
 
@@ -11,6 +23,11 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'PageIndex',
+  data () {
+    return {
+      showAddTask: false
+    }
+  },
   computed: {
     ...mapGetters('tasks', ['tasks'])
     // tasks () {
@@ -18,7 +35,8 @@ export default {
     // }
   },
   components: {
-    'task': require('components/tasks/task.vue').default
+    'task': require('components/tasks/task.vue').default,
+    'add-task': require('components/tasks/modals/addTask.vue').default
   }
 }
 </script>
