@@ -1,10 +1,8 @@
 <template>
   <q-item v-ripple
-
-        @click="task.completed = !task.completed"
+        @click="updateTask({ id: id, updates: {completed:!task.completed} })"
         :class="!task.completed ? 'bg-orange-1' : 'bg-green-2'"
-        clickable
-      >
+        clickable>
         <q-item-section side top>
           <q-checkbox v-model="task.completed" />
         </q-item-section>
@@ -22,11 +20,39 @@
           </div>
           </div>
         </q-item-section>
-      </q-item>
+        <q-item-section side>
+          <q-btn
+            @click.stop="promptToDelete(id)"
+            flat
+            round
+            dense
+            color="red"
+            icon="delete" />
+        </q-item-section>
+  </q-item>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
-  props: ['task', 'id']
+  props: ['task', 'id'],
+  methods: {
+    ...mapActions('tasks', ['updateTask', 'deleteTask']),
+    promptToDelete (id) {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Would you like to Delete ?',
+        ok: {
+          push: true
+        },
+        cancel: {
+          color: 'negative'
+        },
+        persistant: true
+      }).onOk(() => {
+        this.deleteTask(id)
+      })
+    }
+  }
 }
 </script>
